@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="leap.min.js"></script>
+		<script src="jquery.min.js"></script>
+	</head>
+	<body>
+		<h1>Connect to arduino</h1>
+		<input type="text" id="url" />
+		<button onclick="setUrl()">Set address of Leap Motion URL</button>
+		<div id="output"></div>
+		<script>
+			var url = ""
+			function setUrl()
+		{
+				url = document.getElementById('url').value;	
+			}
+
+	  		var output = document.getElementById('output');
+			var i = 0
+	  		Leap.loop(function (frame) {
+				hands = frame.hands;
+				fingers = frame.fingers;
+				if(i++ % 3 == 0)
+
+				var toSend = [];
+				if(hands.length == 1 && fingers.length == 5) {
+					console.log("OK")
+					hand = hands[0];
+					toSend = [{'palm': [hand.direction, hand.palmNormal]}]
+					for(var i = 0; i < 5; i++) 
+						toSend.push({fingers[i].type: fingers[i].direction})
+					}
+					console.log(JSON.stringify(toSend))
+		                   	$.post(url, JSON.stringify(toSend), function(result){
+					        $("#output").html(result);
+					}); 
+				}
+			
+			 });
+		</script>
+	</body>
+</html>
